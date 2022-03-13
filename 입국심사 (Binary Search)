@@ -1,0 +1,26 @@
+def binary_search(n, times, min, max):
+    mid = min + (max - min) // 2    # 중간값 설정
+    if(passed_num(times, mid) < n): # 심사 가능한 사람이 심사 해야하는 사람 보다 적을 경우
+        return binary_search(n, times, mid+1, max)  # 중간값+1 부터 최댓값 사이에서 다시 검색
+    else:
+        if(passed_num(times, mid-1) < n):   # 중간값이 최적의 시간인지 판단하기 위해 중간값-1
+            return mid  # 최적 시간
+        else:
+            return binary_search(n, times, min, mid-1) # 최솟값부터 중간값-1 사이에서 다시 검색
+
+# time 시간 내에 심사 가능한 사람 수를 반환
+def passed_num(times, time):
+    passed = 0
+    for i in range(len(times)):
+        passed += time // times[i]
+    return passed
+        
+def solution(n, times):
+    answer = 0
+    
+    min = 1
+    max = n * times[0]
+    
+    answer = binary_search(n, times, min-1, max+1)
+    
+    return answer
