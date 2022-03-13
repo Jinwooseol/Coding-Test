@@ -1,0 +1,47 @@
+from collections import deque
+
+class Node:
+    def __init__(self, num):
+        self.num = num      # Node의 번호
+        self.marker = False # Node방문 여부
+        self.adjacent = []  # 연결되 다른 nodes의 list
+
+def solution(n, edge):
+    # Breadth-First Search (BFS) 사용
+    
+    Node_list = []
+    Distance_list = [20000]*n   # 1번 node로부터의 거리
+    
+    # Nodes 등록
+    for i in range(n):
+        Node_list.append(Node(i+1))
+
+    # Edges 등록
+    for i in range(len(edge)):
+        Node_list[edge[i][0]-1].adjacent.append(edge[i][1])
+        Node_list[edge[i][1]-1].adjacent.append(edge[i][0])
+    
+    Node_list[0].marker = True # 1번 node 방문
+    Distance_list[0] = 1 # 1번 node의 거리를 1로 설정
+    queue = deque([1])
+    
+    while(queue):
+        node = queue.popleft()
+
+        for i in range(len(Node_list[node-1].adjacent)):
+            j = Node_list[node-1].adjacent[i]   # 인접 node 번호
+            
+            if(Node_list[j-1].marker == False): # 방문하지 않은 node queue에 추가
+                Node_list[j-1].marker = True
+                queue.append(j)
+            
+            if(Distance_list[node-1] + 1 < Distance_list[j-1]):   # adjacent nodes의 distance update
+                Distance_list[j-1] = Distance_list[node-1] + 1
+        
+    m = max(Distance_list)
+    answer = 0
+    for i, v in enumerate(Distance_list):   # 최대 거리에 해당하는 nodes의 수 측정
+        if v == m:
+            answer += 1
+    
+    return answer
