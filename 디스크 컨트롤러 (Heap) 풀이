@@ -1,0 +1,41 @@
+import heapq
+
+# 아이디어
+# 가장 첫 작업은 먼저 진행
+# 현재 시각(time_point)를 작업이 끝나는 시점으로 설정
+# 현재 시각이전에 들어온 요청들중에서 처리시간이 가장 짧은 작업부터 우선해서 작업
+# 각 작업의 요청부터 처리까지의 시간의 평균을 계산
+
+def solution(jobs):
+    
+    heapq.heapify(jobs) # jobs 리스트를 힙으로 변환
+    sum_time = 0        # 요청부터 처리까지 걸린 시간의 합
+    size = len(jobs)    # 작업의 수
+    
+    sum_time += jobs[0][1]                  # 첫 번째 작업 수행에 걸린 시간 기록
+    time_point = jobs[0][0] + jobs[0][1]    # 첫 번째 작업이 끝난 시각으로 현재 시각 설정
+    heapq.heappop(jobs) # 첫 번째 작업 처리
+    
+    times = []  # 작업의 요청부터 처리까지의 시간을 기록하는 heap
+    
+    while jobs:
+        if(jobs[0][0] < time_point):        # 작업의 요청 시각이 현재 시각보다 이전이라면 heap에 추가
+            job = heapq.heappop(jobs)
+            heapq.heappush(times, [job[1], job[0]]) # 요청부터 처리까지 걸리는 시간 저장
+        elif(times == []):
+            job = heapq.heappop(jobs)
+            time_point = job[0] + job[1]    # 현재 시각을 다음 작업 처리 완료 시각으로 변경
+            sum_time += job[1]              # 걸린 시간의 합 update
+            
+        else:
+            job = heapq.heappop(times)
+            sum_time += time_point + job[0] - job[1] # 걸린 시간의 합 update
+            time_point += job[0]            # 현재 시각 update
+             
+    while times:
+        job = heapq.heappop(times)
+        sum_time += time_point + job[0] - job[1] # 걸린 시간의 합 update
+        time_point += job[0]            # 현재 시각 update
+
+    answer = sum_time // size # 작업의 요청부터 종료까지 걸린 시간의 평균 (floor)
+    return answer
