@@ -1,0 +1,40 @@
+An array is monotonic if it is either monotone increasing or monotone decreasing.
+
+An array nums is monotone increasing if for all i <= j, nums[i] <= nums[j]. An array nums is monotone decreasing if for all i <= j, nums[i] >= nums[j].
+
+Given an integer array nums, return true if the given array is monotonic, or false otherwise.
+
+ 
+
+Example 1:
+
+Input: nums = [1,2,2,3]
+Output: true
+Example 2:
+
+Input: nums = [6,5,4,4]
+Output: true
+Example 3:
+
+Input: nums = [1,3,2]
+Output: false
+ 
+
+Constraints:
+
+1 <= nums.length <= 105
+-105 <= nums[i] <= 105
+
+class Solution:
+    def isMonotonic(self, nums: List[int]) -> bool:
+        grad = set([])  # 기울기를 저장하는 set (1: increasing, -1: decreasing)
+        for i in range(len(nums)-1):
+            if nums[i] < nums[i+1]: # 다음 원소가 더 클 경우 기울기에 1 저장
+                grad.add(1)
+            elif nums[i] > nums[i+1]: # 다음 원소가 더 작을 경우 기울기에 -1 저장
+                grad.add(-1)
+            
+            if len(grad) >= 2:  # 기울기 set에 1, -1 둘다 저장되어 있는 경우 (increasing, decreasing 모두 일어남)
+                return False    # Monotonic 아님
+        
+        return True
